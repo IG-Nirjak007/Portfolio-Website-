@@ -21,4 +21,8 @@ public class Project {
     private String description;
 
     private String technologies;
+
+    private String link;
+
+    private String category;
 }

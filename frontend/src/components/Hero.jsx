@@ -1,4 +1,5 @@
 import React from 'react';
+import profileImg from '../assets/profile.jpg';
 
 const TECH = ['React', 'Java', 'Spring Boot', 'JavaScript', 'SQL'];
 
@@ -27,6 +28,15 @@ export default function Hero() {
                     ))}
                 </div>
             </div>
+            </div>
+
+            <div className="hero-art">
+                <div className="hero-image-wrap">
+                    <img src={profileImg} alt="Nirjak" />
+                </div>
+                <div className="hero-stamp">WEB<br/>DEV</div>
+                <div className="hero-line hero-line-one"></div>
+                <div className="hero-line hero-line-two"></div>
             </div>
 
         </section>

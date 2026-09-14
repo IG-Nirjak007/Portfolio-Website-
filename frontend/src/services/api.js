@@ -37,4 +37,21 @@ export const getExperiences = async () => {
         if (!res.ok) throw new Error(`REST API error: ${res.status}`);
         return res.json();
     }
+};
+
+export const getSocialLinks = async () => {
+    try {
+        const { data, error } = await supabase
+            .from('social_link')
+            .select('*')
+            .order('id', { ascending: true });
+
+        if (error) throw error;
+        return data || [];
+    } catch (supabaseErr) {
+        console.warn('Supabase direct query failed, falling back to REST API:', supabaseErr.message);
+        const res = await fetch(`${API_BASE_URL}/social-links`);
+        if (!res.ok) throw new Error(`REST API error: ${res.status}`);
+        return res.json();
+    }
 };

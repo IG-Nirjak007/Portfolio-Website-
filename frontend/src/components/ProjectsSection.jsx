@@ -57,11 +57,12 @@ export default function ProjectsSection({ projects, loading, error }) {
                                 <div
                                     key={proj.id}
                                     className="project-card"
-                                    style={{ animationDelay: `${i * 0.08}s` }}
+                                    style={{ animationDelay: `${i * 0.08}s`, cursor: proj.link ? 'pointer' : 'default' }}
+                                    onClick={() => proj.link && window.open(proj.link, '_blank')}
                                 >
                                     {proj.image && <img className="project-image" src={proj.image} alt="" />}
                                     <div>
-                                        <div className="project-card-top"><span className="project-category">{proj.category || 'Featured project'}</span><a href={proj.link || '#'} target="_blank" rel="noreferrer" aria-label={`Open ${proj.title}`}>↗</a></div>
+                                        <div className="project-card-top"><span className="project-category">{proj.category || 'Featured project'}</span><a href={proj.link || '#'} target="_blank" rel="noreferrer" aria-label={`Open ${proj.title}`} onClick={(e) => e.stopPropagation()}>↗</a></div>
                                         <h3 className="project-title">{proj.title}</h3>
                                         {dateLabel && (
                                             <div className="project-date">
@@ -83,6 +84,19 @@ export default function ProjectsSection({ projects, loading, error }) {
                                             {techList.map(tag => (
                                                 <span key={tag} className="project-tech-tag">{tag}</span>
                                             ))}
+                                        </div>
+                                    )}
+                                    {proj.link && (
+                                        <div style={{ marginTop: '1.25rem' }}>
+                                            <a 
+                                                href={proj.link} 
+                                                target="_blank" 
+                                                rel="noreferrer" 
+                                                className="btn btn-outline"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                View Project
+                                            </a>
                                         </div>
                                     )}
                                 </div>

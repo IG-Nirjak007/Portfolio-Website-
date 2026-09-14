@@ -4,27 +4,99 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ExperienceSection from './components/ExperienceSection';
 import ProjectsSection from './components/ProjectsSection';
-import { getProjects, getExperiences } from './services/api';
+import { getProjects, getExperiences, getSocialLinks } from './services/api';
 
 const LOCAL_PROJECTS = [
-    { id: 'career-hub', title: 'Career Hub', description: 'A focused platform for discovering opportunities, building profiles, and connecting ambitious people with meaningful work.', technologies: 'React, Spring Boot, PostgreSQL', link: 'https://github.com/nirjak', category: 'Product design' },
-    { id: 'himalayan-trail', title: 'The Himalayan Trail', description: 'A visual trail guide for finding the next unforgettable route through Nepal\'s landscapes.', technologies: 'React, Maps, JavaScript', link: 'https://github.com/nirjak', category: 'Exploration' },
-    { id: 'ventis', title: 'Ventis', description: 'An elegant weather and location experience that turns everyday data into a calmer decision.', technologies: 'React, APIs, CSS', link: 'https://github.com/nirjak', category: 'Web experience' }
+    {
+        id: 'child-safe-browsing',
+        title: 'Child Safe Browsing & Monitoring System',
+        description: 'A browser-based real-time content moderation system using text/image analysis, TF-IDF, Logistic Regression, CNN image classification, and a JWT-authenticated parent dashboard.',
+        technologies: 'JavaScript, Python, Flask, TensorFlow, Chrome Extension',
+        link: 'https://github.com/IG-Nirjak007/ChildSafe-BrowingExtension-AI',
+        category: 'Machine Learning / Web Safety'
+    },
+    {
+        id: 'pawtrace-ai',
+        title: 'PawTrace AI Canine Disease System',
+        description: 'Deep learning computer vision system to automate canine health issue detection and disease identification from image data.',
+        technologies: 'Python, Deep Learning, CNN, Computer Vision',
+        link: 'https://github.com/IG-Nirjak007/Python_extra_class',
+        category: 'Computer Vision / AI'
+    },
+    {
+        id: 'portfolio-website',
+        title: 'Full-Stack Portfolio Website',
+        description: 'Personal portfolio application featuring dynamic Supabase data fetching, local fallbacks, theme toggling, and a Spring Boot backend.',
+        technologies: 'React, Vite, Java, Spring Boot, Supabase, PostgreSQL',
+        link: 'https://github.com/IG-Nirjak007/Portfolio-Website-',
+        category: 'Full-Stack Web App'
+    },
+    {
+        id: 'qa-opencart-testing',
+        title: 'OpenCart QA & Automated Testing',
+        description: 'Formal software quality assurance project performing automated and manual testing on the OpenCart platform.',
+        technologies: 'TypeScript, Quality Assurance, Automated Testing',
+        link: 'https://github.com/IG-Nirjak007/QA-automation-testing',
+        category: 'Software Testing / QA'
+    },
+    {
+        id: 'simple-todo-list',
+        title: 'Full-Stack To-Do List Application',
+        description: 'Web application built with a Java Spring Boot REST API backend using SQLite3 via JPA and a clean React user interface.',
+        technologies: 'React, Java, Spring Boot, REST API, SQLite3',
+        link: 'https://github.com/IG-Nirjak007/Simple-To-Do-List',
+        category: 'Full-Stack Development'
+    },
+    {
+        id: 'mern-ecommerce',
+        title: 'MERN Stack E-Commerce Platform',
+        description: 'Responsive e-commerce web application featuring product listings, end-to-end database schema design, and payment integration.',
+        technologies: 'MongoDB, Express, React, Node.js (MERN)',
+        link: 'https://github.com/IG-Nirjak007/Web_Project',
+        category: 'E-Commerce'
+    }
 ];
 
 const LOCAL_EXPERIENCES = [
-    { id: 'internship', role: 'Software Engineering Intern', company: 'Internship', location: 'Kathmandu, Nepal', start_date: '2025', end_date: 'Present', description: 'Building practical full-stack products with Java, Spring Boot, React, and thoughtful interface design.' },
-    { id: 'bachelors', role: 'Bachelor of Science in Computer Science', company: 'Herald College Kathmandu', location: 'Kathmandu, Nepal', start_date: '2022', end_date: '2026', description: 'Studying software engineering, systems, and the craft of turning ideas into useful digital experiences.' }
+    {
+        id: 'intern-infodev',
+        role: 'Software Engineering Intern',
+        company: 'Info Developers Pvt. Ltd.',
+        location: 'Sanepa, Lalitpur',
+        start_date: 'August 3, 2026',
+        end_date: 'Present',
+        description: 'Contributing to full-stack software development, Java/Spring Boot backend API implementations, and enterprise web applications.'
+    },
+    {
+        id: 'education-nccs',
+        role: 'B.Sc. in Computer Science & Information Technology',
+        company: 'National College of Computer Studies (NCCS), TU',
+        location: 'Kathmandu, Nepal',
+        start_date: '2022',
+        end_date: 'Present',
+        description: 'Studying full-stack development, machine learning, software engineering, and software quality assurance.'
+    },
+    {
+        id: 'education-nist',
+        role: '+2 Science',
+        company: 'National Institute of Science and Technology (NIST), NEB',
+        location: 'Kathmandu, Nepal',
+        start_date: '2020',
+        end_date: '2021',
+        description: 'Completed high school education with a focus on science, mathematics, and computer technology fundamentals.'
+    }
 ];
 
 export default function App() {
-    const [projects, setProjects]           = useState([]);
-    const [experiences, setExperiences]     = useState([]);
-    const [projectsLoading, setProjectsLoading]     = useState(true);
+    const [projects, setProjects] = useState([]);
+    const [experiences, setExperiences] = useState([]);
+    const [socialLinks, setSocialLinks] = useState([]);
+    const [projectsLoading, setProjectsLoading] = useState(true);
     const [experiencesLoading, setExperiencesLoading] = useState(true);
-    const [projectsError, setProjectsError]         = useState(null);
-    const [experiencesError, setExperiencesError]   = useState(null);
+    const [projectsError, setProjectsError] = useState(null);
+    const [experiencesError, setExperiencesError] = useState(null);
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('portfolio-theme') !== 'light');
+
     const displayedProjects = projects.length > 0 ? projects : LOCAL_PROJECTS;
     const displayedExperiences = experiences.length > 0 ? experiences : LOCAL_EXPERIENCES;
 
@@ -43,6 +115,10 @@ export default function App() {
             .then(data => setExperiences(data))
             .catch(err => setExperiencesError(err.message))
             .finally(() => setExperiencesLoading(false));
+
+        getSocialLinks()
+            .then(data => setSocialLinks(data))
+            .catch(err => console.error("Failed to load social links:", err));
     }, []);
 
     return (
@@ -68,11 +144,21 @@ export default function App() {
                         <h2 className="contact-title">Let&apos;s make something worth remembering.</h2>
                     </div>
                     <div className="contact-copy">
-                        <p>I&apos;m always open to thoughtful collaborations, interesting problems, and conversations about the web.</p>
+                        <p>I&apos;m always open to thoughtful collaborations, interesting problems, and conversations about modern full-stack engineering and ML solutions.</p>
                         <div className="social-links">
-                            <a className="social-link" href="mailto:nirjak@gmail.com">Email</a>
-                            <a className="social-link" href="https://github.com/nirjak" target="_blank" rel="noreferrer">GitHub</a>
-                            <a className="social-link" href="https://www.linkedin.com/in/nirjak/" target="_blank" rel="noreferrer">LinkedIn</a>
+                            <a className="social-link" href="mailto:nirjakbhattarai1@gmail.com">Email</a>
+                            {socialLinks.length > 0 ? (
+                                socialLinks.map(link => (
+                                    <a key={link.id} className="social-link" href={link.url} target="_blank" rel="noreferrer">
+                                        {link.platform}
+                                    </a>
+                                ))
+                            ) : (
+                                <>
+                                    <a className="social-link" href="https://github.com/IG-Nirjak007" target="_blank" rel="noreferrer">GitHub</a>
+                                    <a className="social-link" href="https://instagram.com/Nirjak__007" target="_blank" rel="noreferrer">Instagram</a>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -81,7 +167,7 @@ export default function App() {
                 <p className="footer-text">
                     NIRJAK <span>2026</span>
                 </p>
-                <small>Built with React + Vite</small>
+                <small>Built with React + Spring Boot</small>
             </footer>
         </>
     );
