@@ -4,7 +4,7 @@ function LoadingState() {
     return (
         <div className="state-container">
             <div className="state-spinner" />
-            <p className="state-title">Loading experiences…</p>
+            <p className="state-title" style={{ color: '#ffffff' }}>Loading experiences…</p>
         </div>
     );
 }
@@ -13,8 +13,8 @@ function EmptyState() {
     return (
         <div className="state-container">
             <span className="state-icon">📭</span>
-            <p className="state-title">No experiences yet</p>
-            <p className="state-sub">Add rows to the <code>experience</code> table in Supabase.</p>
+            <p className="state-title" style={{ color: '#ffffff' }}>No experiences yet</p>
+            <p className="state-sub" style={{ color: '#cccccc' }}>Add rows to the <code>experience</code> table in Supabase.</p>
         </div>
     );
 }
@@ -23,75 +23,102 @@ function ErrorState({ message }) {
     return (
         <div className="state-container">
             <span className="state-icon">⚠️</span>
-            <p className="state-title state-error">Failed to load experiences</p>
-            <p className="state-sub">{message}</p>
+            <p className="state-title state-error" style={{ color: '#ff6b6b' }}>Failed to load experiences</p>
+            <p className="state-sub" style={{ color: '#cccccc' }}>{message}</p>
         </div>
     );
 }
 
-const EMOJI = ['💼', '🚀', '⚡', '🎯', '🔥', '✨'];
-
 export default function ExperienceSection({ experiences, loading, error }) {
-    return (
-        <section id="experience" className="section experience-section">
-            <div className="section-inner">
-                <div className="section-header">
-                    <div className="section-eyebrow">The path so far</div>
-                    <h2 className="section-title">Experience & education</h2>
-                    <div className="section-divider" />
+  return (
+    <section id="experience" style={{
+      backgroundColor: '#121212', // Matches your deep dark background
+      color: '#e0e0e0',
+      padding: '40px 20px',
+      fontFamily: 'system-ui, -apple-system, sans-serif'
+    }}>
+      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        
+        {/* Title matches your serif/elegant typography style */}
+        <h2 style={{ 
+          fontSize: '2.5rem', 
+          fontFamily: 'serif', 
+          fontWeight: 'normal',
+          marginBottom: '40px',
+          color: '#ffffff'
+        }}>
+          Experience & education
+        </h2>
+
+        {loading && <LoadingState />}
+        {!loading && error && <ErrorState message={error} />}
+        {!loading && !error && experiences.length === 0 && <EmptyState />}
+
+        {/* Timeline Container */}
+        {!loading && !error && experiences.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            {experiences.map((item) => (
+              <div 
+                key={item.id} 
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '250px 1fr', // Separates date/meta from main description smoothly
+                  gap: '24px',
+                  borderBottom: '1px solid #2a2a2a',
+                  paddingBottom: '24px'
+                }}
+              >
+                {/* Left Column: Timeline & Dates */}
+                <div>
+                  <span style={{ 
+                    fontSize: '0.85rem', 
+                    textTransform: 'uppercase', 
+                    letterSpacing: '1px', 
+                    color: '#888888',
+                    display: 'block',
+                    marginBottom: '4px'
+                  }}>
+                    {item.start_date || item.startDate} — {item.end_date || item.endDate || 'Present'}
+                  </span>
+                  <span style={{ fontSize: '0.9rem', color: '#aaaaaa', display: 'block' }}>
+                    {item.location}
+                  </span>
                 </div>
 
-                {loading && <LoadingState />}
-                {!loading && error && <ErrorState message={error} />}
-                {!loading && !error && experiences.length === 0 && <EmptyState />}
+                {/* Right Column: Role details */}
+                <div>
+                  <h3 style={{ 
+                    fontSize: '1.25rem', 
+                    margin: '0 0 6px 0', 
+                    color: '#ffffff',
+                    fontWeight: '500'
+                  }}>
+                    {item.role}
+                  </h3>
+                  <h4 style={{ 
+                    fontSize: '1rem', 
+                    margin: '0 0 12px 0', 
+                    color: '#d4af37', // A warm elegant accent color fitting your layout style
+                    fontWeight: 'normal'
+                  }}>
+                    {item.company}
+                  </h4>
+                  <p style={{ 
+                    fontSize: '0.95rem', 
+                    lineHeight: '1.6', 
+                    color: '#cccccc', 
+                    margin: '0' 
+                  }}>
+                    {item.description}
+                  </p>
+                </div>
 
-                {!loading && !error && experiences.length > 0 && (
-                    <div className="experience-timeline">
-                        {experiences.map((exp, i) => (
-                            <div
-                                key={exp.id}
-                                className="experience-card"
-                                style={{ animationDelay: `${i * 0.1}s` }}
-                            >
-                                <div className="exp-timeline-dot">
-                                    {EMOJI[i % EMOJI.length]}
-                                </div>
-                                <div className="exp-body">
-                                    <div className="exp-header">
-                                        <span className="exp-role">{exp.role}</span>
-                                        <span className="exp-company">{exp.company}</span>
-                                    </div>
-                                    <div className="exp-meta">
-                                        {exp.location && (
-                                            <span>
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                                    <circle cx="12" cy="10" r="3"/>
-                                                </svg>
-                                                {exp.location}
-                                            </span>
-                                        )}
-                                        {(exp.start_date || exp.startDate) && (
-                                            <span>
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                                    <line x1="16" y1="2" x2="16" y2="6"/>
-                                                    <line x1="8" y1="2" x2="8" y2="6"/>
-                                                    <line x1="3" y1="10" x2="21" y2="10"/>
-                                                </svg>
-                                                {exp.start_date || exp.startDate} – {exp.end_date || exp.endDate || 'Present'}
-                                            </span>
-                                        )}
-                                    </div>
-                                    {exp.description && (
-                                        <p className="exp-description">{exp.description}</p>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-        </section>
-    );
+              </div>
+            ))}
+          </div>
+        )}
+
+      </div>
+    </section>
+  );
 }

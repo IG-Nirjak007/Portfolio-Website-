@@ -165,7 +165,7 @@ export default function App() {
             </section>
             <footer className="footer">
                 <p className="footer-text">
-                    NIRJAK <span>2026</span>
+                    © 2026 NIRJAK <span> All Rights Reserved.</span>
                 </p>
                 <small>Built with React + Spring Boot</small>
             </footer>
