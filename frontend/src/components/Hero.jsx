@@ -1,44 +1,31 @@
 import React from 'react';
 import profileImg from '../assets/profile.jpg';
 
-const TECH = ['React', 'Java', 'Spring Boot', 'JavaScript', 'SQL'];
-
 export default function Hero() {
     return (
-        <section id="about" className="hero">
-            <div className="hero-copy">
-                <p className="eyebrow">Hello, I’m NIRJAK</p>
-                <h1 className="hero-title">I make the web feel <em>human.</em></h1>
-                <p className="hero-sub">A developer and curious builder based in Kathmandu. I care about clean code, clear ideas, and digital experiences that leave people better than I found them.</p>
+        <section id="home" className="hero-section">
+            <div className="hero-avatar-wrap">
+                <img src={profileImg} alt="Nirjak Bhattarai" className="hero-avatar-img" />
+            </div>
+
+            <h2 className="hero-greeting">Hi! I’m Nirjak Bhattarai</h2>
+
+            <h1 className="hero-headline">
+                A Full Stack Developer passionate about crafting clean, efficient, and modern web experiences.
+            </h1>
+
+            <p className="hero-bio">
+                I have a strong interest in building engaging and user-friendly web applications, with a keen focus on technologies like React, JavaScript, Python, and Java. I love building machine learning solutions, full-stack systems, and continuously learning to solve practical problems through technology. My goal is to craft seamless, responsive interfaces and robust backend systems while contributing to innovative tech projects.
+            </p>
 
             <div className="hero-actions">
-                <a href="#projects" className="btn btn-primary">
-                    See my work <span>↗</span>
+                <a href="#projects" className="btn-pill btn-pill-primary">
+                    View My Work <span>→</span>
                 </a>
-                <a href="mailto:nirjak@gmail.com" className="btn btn-outline">
-                    Let’s talk <span>↗</span>
+                <a href="#contact" className="btn-pill btn-pill-outline">
+                    My Resume <span>⤓</span>
                 </a>
             </div>
-
-            <div className="hero-tech-stack">
-                <span className="tech-label">I work with</span>
-                <div className="tech-pills">
-                    {TECH.map(t => (
-                        <span key={t} className="tech-pill">{t}</span>
-                    ))}
-                </div>
-            </div>
-            </div>
-
-            <div className="hero-art">
-                <div className="hero-image-wrap">
-                    <img src={profileImg} alt="Nirjak" />
-                </div>
-                <div className="hero-stamp">WEB<br/>DEV</div>
-                <div className="hero-line hero-line-one"></div>
-                <div className="hero-line hero-line-two"></div>
-            </div>
-
         </section>
     );
 }

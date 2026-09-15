@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './style.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import AboutSection from './components/AboutSection';
+import ToolsSection from './components/ToolsSection';
 import ExperienceSection from './components/ExperienceSection';
 import ProjectsSection from './components/ProjectsSection';
 import { getProjects, getExperiences, getSocialLinks } from './services/api';
@@ -126,48 +128,52 @@ export default function App() {
             <Navbar darkMode={darkMode} onToggleTheme={() => setDarkMode(value => !value)} />
             <main>
                 <Hero />
-                <ExperienceSection
-                    experiences={displayedExperiences}
-                    loading={experiencesLoading}
-                    error={experiencesError}
-                />
+                <AboutSection />
+                <ToolsSection />
                 <ProjectsSection
                     projects={displayedProjects}
                     loading={projectsLoading}
                     error={projectsError}
                 />
+                <ExperienceSection
+                    experiences={displayedExperiences}
+                    loading={experiencesLoading}
+                    error={experiencesError}
+                />
             </main>
+
             <section id="contact" className="contact-section">
-                <div className="contact-inner">
-                    <div>
-                        <div className="section-eyebrow">Have a good idea?</div>
-                        <h2 className="contact-title">Let&apos;s make something worth remembering.</h2>
-                    </div>
-                    <div className="contact-copy">
-                        <p>I&apos;m always open to thoughtful collaborations, interesting problems, and conversations about modern full-stack engineering and ML solutions.</p>
-                        <div className="social-links">
-                            <a className="social-link" href="mailto:nirjakbhattarai1@gmail.com">Email</a>
-                            {socialLinks.length > 0 ? (
-                                socialLinks.map(link => (
-                                    <a key={link.id} className="social-link" href={link.url} target="_blank" rel="noreferrer">
-                                        {link.platform}
-                                    </a>
-                                ))
-                            ) : (
-                                <>
-                                    <a className="social-link" href="https://github.com/IG-Nirjak007" target="_blank" rel="noreferrer">GitHub</a>
-                                    <a className="social-link" href="https://instagram.com/Nirjak__007" target="_blank" rel="noreferrer">Instagram</a>
-                                </>
-                            )}
-                        </div>
-                    </div>
+                <h2 className="section-heading">Let&apos;s Connect</h2>
+                <p className="contact-text">
+                    I&apos;m always open to thoughtful collaborations, interesting engineering challenges, and conversations about modern full-stack web and ML solutions.
+                </p>
+                <div className="contact-links">
+                    <a className="contact-link" href="mailto:nirjakbhattarai1@gmail.com">
+                        ✉️ Email Me
+                    </a>
+                    {socialLinks.length > 0 ? (
+                        socialLinks.map(link => (
+                            <a key={link.id} className="contact-link" href={link.url} target="_blank" rel="noreferrer">
+                                {link.platform} ↗
+                            </a>
+                        ))
+                    ) : (
+                        <>
+                            <a className="contact-link" href="https://github.com/IG-Nirjak007" target="_blank" rel="noreferrer">
+                                GitHub ↗
+                            </a>
+                            <a className="contact-link" href="https://instagram.com/Nirjak__007" target="_blank" rel="noreferrer">
+                                Instagram ↗
+                            </a>
+                        </>
+                    )}
                 </div>
             </section>
+
             <footer className="footer">
-                <p className="footer-text">
-                    © 2026 NIRJAK <span> All Rights Reserved.</span>
+                <p>
+                    © {new Date().getFullYear()} Nirjak Bhattarai<span>.</span> All Rights Reserved.
                 </p>
-                <small>Built with React + Spring Boot</small>
             </footer>
         </>
     );
