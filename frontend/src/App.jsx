@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import './style.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -6,9 +7,12 @@ import AboutSection from './components/AboutSection';
 import ToolsSection from './components/ToolsSection';
 import ExperienceSection from './components/ExperienceSection';
 import ProjectsSection from './components/ProjectsSection';
-import { getProjects, getExperiences, getSocialLinks } from './services/api';
+import AdminLogin from './components/admin/AdminLogin';
+import AdminDashboard from './components/admin/AdminDashboard';
+import ProtectedRoute from './components/admin/ProtectedRoute';
+import { getProjects, getExperiences, getSocialLinks, getResumeUrl } from './services/api';
 
-const LOCAL_PROJECTS = [
+export const LOCAL_PROJECTS = [
     {
         id: 'child-safe-browsing',
         title: 'Child Safe Browsing & Monitoring System',
@@ -59,7 +63,7 @@ const LOCAL_PROJECTS = [
     }
 ];
 
-const LOCAL_EXPERIENCES = [
+export const LOCAL_EXPERIENCES = [
     {
         id: 'intern-infodev',
         role: 'Software Engineering Intern',
@@ -89,18 +93,31 @@ const LOCAL_EXPERIENCES = [
     }
 ];
 
-export default function App() {
+// ─── Portfolio Page ───────────────────────────────────────────────────────────
+function PortfolioPage() {
     const [projects, setProjects] = useState([]);
     const [experiences, setExperiences] = useState([]);
     const [socialLinks, setSocialLinks] = useState([]);
+    const [resumeUrl, setResumeUrl] = useState('');
     const [projectsLoading, setProjectsLoading] = useState(true);
     const [experiencesLoading, setExperiencesLoading] = useState(true);
     const [projectsError, setProjectsError] = useState(null);
     const [experiencesError, setExperiencesError] = useState(null);
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('portfolio-theme') !== 'light');
 
-    const displayedProjects = projects.length > 0 ? projects : LOCAL_PROJECTS;
-    const displayedExperiences = experiences.length > 0 ? experiences : LOCAL_EXPERIENCES;
+    const displayedProjects = [...projects];
+    LOCAL_PROJECTS.forEach(lp => {
+        if (!projects.some(p => p.title === lp.title)) {
+            displayedProjects.push(lp);
+        }
+    });
+
+    const displayedExperiences = [...experiences];
+    LOCAL_EXPERIENCES.forEach(le => {
+        if (!experiences.some(e => e.role === le.role && e.company === le.company)) {
+            displayedExperiences.push(le);
+        }
+    });
 
     useEffect(() => {
         document.documentElement.dataset.theme = darkMode ? 'dark' : 'light';
@@ -120,14 +137,18 @@ export default function App() {
 
         getSocialLinks()
             .then(data => setSocialLinks(data))
-            .catch(err => console.error("Failed to load social links:", err));
+            .catch(err => console.error('Failed to load social links:', err));
+
+        getResumeUrl()
+            .then(url => setResumeUrl(url))
+            .catch(() => {});
     }, []);
 
     return (
         <>
             <Navbar darkMode={darkMode} onToggleTheme={() => setDarkMode(value => !value)} />
             <main>
-                <Hero />
+                <Hero resumeUrl={resumeUrl} />
                 <AboutSection />
                 <ToolsSection />
                 <ProjectsSection
@@ -151,6 +172,9 @@ export default function App() {
                     <a className="contact-link" href="mailto:nirjakbhattarai1@gmail.com">
                         ✉️ Email Me
                     </a>
+                    <a className="contact-link" href="tel:+9779865369292" id="contact-phone">
+                        📞 +977 9865369292
+                    </a>
                     {socialLinks.length > 0 ? (
                         socialLinks.map(link => (
                             <a key={link.id} className="contact-link" href={link.url} target="_blank" rel="noreferrer">
@@ -167,6 +191,18 @@ export default function App() {
                             </a>
                         </>
                     )}
+                    {resumeUrl && (
+                        <a
+                            className="contact-link"
+                            href={resumeUrl}
+                            download="Nirjak_Resume.pdf"
+                            target="_blank"
+                            rel="noreferrer"
+                            id="contact-resume-download"
+                        >
+                            ⤓ Download CV
+                        </a>
+                    )}
                 </div>
             </section>
 
@@ -176,5 +212,29 @@ export default function App() {
                 </p>
             </footer>
         </>
+    );
+}
+
+// ─── App with Router ──────────────────────────────────────────────────────────
+export default function App() {
+    // Sync theme on admin pages too
+    useEffect(() => {
+        const saved = localStorage.getItem('portfolio-theme');
+        document.documentElement.dataset.theme = saved === 'light' ? 'light' : 'dark';
+    }, []);
+
+    return (
+        <Routes>
+            <Route path="/" element={<PortfolioPage />} />
+            <Route path="/auth/login" element={<AdminLogin />} />
+            <Route
+                path="/admin"
+                element={
+                    <ProtectedRoute>
+                        <AdminDashboard />
+                    </ProtectedRoute>
+                }
+            />
+        </Routes>
     );
 }
