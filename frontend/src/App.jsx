@@ -58,7 +58,10 @@ export const LOCAL_PROJECTS = [
         title: 'MERN Stack E-Commerce Platform',
         description: 'Responsive e-commerce web application featuring product listings, end-to-end database schema design, and payment integration.',
         technologies: 'MongoDB, Express, React, Node.js (MERN)',
-        link: 'https://github.com/IG-Nirjak007/Web_Project',
+        links: [
+            { url: 'https://github.com/baivabbhusal/E-commerce-Frontend-React-with-NextJs', label: 'Frontend' },
+            { url: 'https://github.com/baivabbhusal/Ecommerce-Backend', label: 'Backend' }
+        ],
         category: 'E-Commerce'
     }
 ];

@@ -75,7 +75,7 @@ function ProjectForm({ initial, onSave, onCancel, loading }) {
             </div>
             <div className="admin-field">
                 <label className="admin-label">GitHub / Live Link</label>
-                <input id="proj-link" className="admin-input" type="url" value={form.link} onChange={e => set('link', e.target.value)} placeholder="https://github.com/..." />
+                <input id="proj-link" className="admin-input" type="text" value={form.link} onChange={e => set('link', e.target.value)} placeholder="https://github.com/... or JSON array" />
             </div>
             <div className="admin-form-actions">
                 <button type="button" className="admin-cancel-btn" onClick={onCancel} disabled={loading}>Cancel</button>
@@ -249,7 +249,7 @@ function ProjectsTab({ toast }) {
                                 <tr key={p.id}>
                                     <td>
                                         <span className="admin-table-title">{p.title}</span>
-                                        {p.isLocal && <span style={{marginLeft: '0.5rem', fontSize: '0.75rem', color: 'var(--subtle)', fontStyle: 'italic'}}>(Local)</span>}
+                                        {p.isLocal && <span style={{ marginLeft: '0.5rem', fontSize: '0.75rem', color: 'var(--subtle)', fontStyle: 'italic' }}>(Local)</span>}
                                     </td>
                                     <td>{p.category && <span className="admin-table-tag admin-tag-accent">{p.category}</span>}</td>
                                     <td>
@@ -258,19 +258,42 @@ function ProjectsTab({ toast }) {
                                         ))}
                                     </td>
                                     <td>
-                                        {p.link && (
-                                            <a href={p.link} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-dot)', fontSize: '0.82rem' }}>
-                                                ↗ View
-                                            </a>
-                                        )}
+                                        {(() => {
+                                            let displayLinks = p.links;
+                                            if (!displayLinks && p.link && p.link.startsWith('[') && p.link.endsWith(']')) {
+                                                try { displayLinks = JSON.parse(p.link); } catch (e) {}
+                                            }
+
+                                            if (displayLinks) {
+                                                return (
+                                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                        {displayLinks.map((lnk, idx) => (
+                                                            <a key={idx} href={lnk.url} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-dot)', fontSize: '0.82rem' }}>
+                                                                ↗ {lnk.label}
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                );
+                                            } else if (p.link) {
+                                                return (
+                                                    <a href={p.link} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-dot)', fontSize: '0.82rem' }}>
+                                                        ↗ View
+                                                    </a>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
                                     </td>
                                     <td>
                                         <div className="admin-row-actions">
                                             {p.isLocal ? (
-                                                <button className="admin-btn-icon" style={{color: 'var(--accent-dot)', whiteSpace: 'nowrap'}} onClick={async () => {
+                                                <button className="admin-btn-icon" style={{ color: 'var(--accent-dot)', whiteSpace: 'nowrap' }} onClick={async () => {
                                                     setSaving(true);
                                                     try {
-                                                        const { id, isLocal, ...rest } = p;
+                                                        const { id, isLocal, links, ...rest } = p;
+                                                        if (links) {
+                                                            rest.link = JSON.stringify(links);
+                                                        }
                                                         await createProject(rest);
                                                         toast('Published to database!', 'success');
                                                         load();
@@ -411,7 +434,7 @@ function ExperiencesTab({ toast }) {
                                 <tr key={e.id}>
                                     <td>
                                         <span className="admin-table-title">{e.role}</span>
-                                        {e.isLocal && <span style={{marginLeft: '0.5rem', fontSize: '0.75rem', color: 'var(--subtle)', fontStyle: 'italic'}}>(Local)</span>}
+                                        {e.isLocal && <span style={{ marginLeft: '0.5rem', fontSize: '0.75rem', color: 'var(--subtle)', fontStyle: 'italic' }}>(Local)</span>}
                                     </td>
                                     <td>{e.company}</td>
                                     <td>
@@ -421,7 +444,7 @@ function ExperiencesTab({ toast }) {
                                     <td>
                                         <div className="admin-row-actions">
                                             {e.isLocal ? (
-                                                <button className="admin-btn-icon" style={{color: 'var(--accent-dot)', whiteSpace: 'nowrap'}} onClick={async () => {
+                                                <button className="admin-btn-icon" style={{ color: 'var(--accent-dot)', whiteSpace: 'nowrap' }} onClick={async () => {
                                                     setSaving(true);
                                                     try {
                                                         const { id, isLocal, ...rest } = e;
@@ -781,11 +804,11 @@ function OverviewTab({ setTab }) {
 
 // ─── MAIN DASHBOARD ───────────────────────────────────────────────────────────
 const NAV_ITEMS = [
-    { id: 'overview',     label: 'Overview',     icon: '◈' },
-    { id: 'projects',     label: 'Projects',     icon: '📁' },
-    { id: 'experiences',  label: 'Experience',   icon: '💼' },
-    { id: 'social',       label: 'Social Links', icon: '🔗' },
-    { id: 'resume',       label: 'Resume / CV',  icon: '📄' },
+    { id: 'overview', label: 'Overview', icon: '◈' },
+    { id: 'projects', label: 'Projects', icon: '📁' },
+    { id: 'experiences', label: 'Experience', icon: '💼' },
+    { id: 'social', label: 'Social Links', icon: '🔗' },
+    { id: 'resume', label: 'Resume / CV', icon: '📄' },
 ];
 
 export default function AdminDashboard() {
@@ -811,12 +834,12 @@ export default function AdminDashboard() {
 
     const renderTab = () => {
         switch (tab) {
-            case 'overview':    return <OverviewTab setTab={setTab} />;
-            case 'projects':    return <ProjectsTab toast={showToast} />;
+            case 'overview': return <OverviewTab setTab={setTab} />;
+            case 'projects': return <ProjectsTab toast={showToast} />;
             case 'experiences': return <ExperiencesTab toast={showToast} />;
-            case 'social':      return <SocialLinksTab toast={showToast} />;
-            case 'resume':      return <ResumeTab toast={showToast} />;
-            default:            return null;
+            case 'social': return <SocialLinksTab toast={showToast} />;
+            case 'resume': return <ResumeTab toast={showToast} />;
+            default: return null;
         }
     };
 

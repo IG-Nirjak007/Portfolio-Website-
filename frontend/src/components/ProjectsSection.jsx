@@ -48,18 +48,47 @@ export default function ProjectsSection({ projects, loading, error }) {
                                         <span className="project-category">
                                             {proj.category || 'Featured Work'}
                                         </span>
-                                        {proj.link && (
-                                            <a
-                                                href={proj.link}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="project-link-icon"
-                                                aria-label={`Open ${proj.title}`}
-                                                title="View Source / Demo"
-                                            >
-                                                ↗
-                                            </a>
-                                        )}
+                                        {(() => {
+                                            let displayLinks = proj.links;
+                                            if (!displayLinks && proj.link && proj.link.startsWith('[') && proj.link.endsWith(']')) {
+                                                try { displayLinks = JSON.parse(proj.link); } catch (e) {}
+                                            }
+
+                                            if (displayLinks) {
+                                                return (
+                                                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                                        {displayLinks.map((lnk, idx) => (
+                                                            <a
+                                                                key={idx}
+                                                                href={lnk.url}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="project-link-icon"
+                                                                aria-label={`Open ${proj.title} ${lnk.label}`}
+                                                                title={`View ${lnk.label}`}
+                                                                style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                                            >
+                                                                {lnk.label} ↗
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                );
+                                            } else if (proj.link) {
+                                                return (
+                                                    <a
+                                                        href={proj.link}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="project-link-icon"
+                                                        aria-label={`Open ${proj.title}`}
+                                                        title="View Source / Demo"
+                                                    >
+                                                        ↗
+                                                    </a>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
                                     </div>
                                     <h3 className="project-title">{proj.title}</h3>
                                     <p className="project-description">{proj.description}</p>
